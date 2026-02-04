@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Birthday Fun</title>
+<style>
+body{
+  margin:0;
+  height:100vh;
+  font-family:Arial;
+  overflow:hidden;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:linear-gradient(to bottom,#ffb6c1,#add8e6);
+  animation:bgShift 10s ease-in-out infinite alternate;
+}
+@keyframes bgShift{
+0%{background:linear-gradient(to bottom,#ffb6c1,#add8e6);}
+50%{background:linear-gradient(to bottom,#ffe4e1,#87cefa);}
+100%{background:linear-gradient(to bottom,#ffb6c1,#add8e6);}
+}
+.box{
+  background:white;
+  padding:25px;
+  border-radius:20px;
+  text-align:center;
+  width:80%;
+  max-width:320px;
+  box-shadow:0 5px 20px rgba(0,0,0,0.2);
+  position:relative;
+  z-index:2;
+}
+input,button{
+  width:100%;
+  padding:10px;
+  margin-top:10px;
+  border-radius:10px;
+  border:none;
+  font-size:16px;
+}
+button{
+  background:pink;
+  cursor:pointer;
+}
+#error{
+  color:red;
+  margin-top:10px;
+  font-weight:bold;
+}
+.shake{
+  animation:shake 0.3s;
+}
+@keyframes shake{
+0%{transform:translateX(0);}
+25%{transform:translateX(-5px);}
+50%{transform:translateX(5px);}
+75%{transform:translateX(-5px);}
+100%{transform:translateX(0);}
+}
+/* Balloons */
+.balloon{
+  position:absolute;
+  bottom:-100px;
+  font-size:30px;
+  animation:float 6s linear infinite;
+}
+@keyframes float{
+0%{bottom:-100px;}
+100%{bottom:110%;}
+}
+/* Confetti */
+.confetti{
+  position:absolute;
+  width:10px;
+  height:10px;
+  background:red;
+  top:0;
+  animation:fall linear forwards;
+}
+@keyframes fall{
+0%{transform:translateY(0) rotate(0deg);}
+100%{transform:translateY(100vh) rotate(360deg);}
+}
+</style>
+</head>
+<body>
+
+<!-- Background music -->
+<audio id="music" autoplay loop>
+  <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+</audio>
+
+<div class="box">
+<h2>🎉 What do you want for your birthday?</h2>
+<input id="wish" placeholder="Type here...">
+<button onclick="submit()">Submit</button>
+<button id="any" onclick="anything()">Anything</button>
+<p id="error"></p>
+</div>
+
+<!-- Balloons -->
+<div class="balloon" style="left:5%">🎈</div>
+<div class="balloon" style="left:50%">🎈</div>
+<div class="balloon" style="left:75%">🎈</div>
+
+<script>
+let anythingClicks=0;
+
+function submit(){
+  let w=document.getElementById("wish").value.trim().toLowerCase();
+  if(w==""){
+    alert("Type something 😄");
+    return;
+  }
+  if(w=="anything"){
+    document.getElementById("error").innerText="❌ Error — try listing real things";
+    document.getElementById("wish").value="";
+    return;
+  }
+  createConfetti(50);
+  alert("Saved 🎁");
+  document.getElementById("error").innerText="";
+  document.getElementById("wish").value="";
+}
+
+function anything(){
+  let b=document.getElementById("any");
+  b.classList.add("shake");
+  anythingClicks++;
+  document.getElementById("error").innerText="❌ Error — try listing things";
+  setTimeout(()=>b.classList.remove("shake"),300);
+
+  // Funny pop-ups every few clicks
+  if(anythingClicks===3){
+    alert("😆 Really? You still want ANYTHING?");
+  } else if(anythingClicks===6){
+    alert("😂 Stop pressing it! Be creative!");
+  } else if(anythingClicks===10){
+    alert("🤣 Alright, that’s enough 😎");
+    anythingClicks=0; // reset counter
+  }
+}
+
+// Confetti function
+function createConfetti(amount){
+  for(let i=0;i<amount;i++){
+    let c=document.createElement("div");
+    c.classList.add("confetti");
+    c.style.background=randomColor();
+    c.style.left=Math.random()*100+"vw";
+    c.style.animationDuration=(2+Math.random()*3)+"s";
+    c.style.width=(5+Math.random()*10)+"px";
+    c.style.height=(5+Math.random()*10)+"px";
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),5000);
+  }
+}
+
+function randomColor(){
+  let colors=["#ff0","#f00","#0f0","#0ff","#00f","#f0f"];
+  return colors[Math.floor(Math.random()*colors.length)];
+}
+</script>
+
+</body>
+</html>
